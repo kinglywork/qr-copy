@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文件拷贝工具</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://unpkg.com/html5-qrcode@2.2.5/html5-qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script src="js/script.js" type="module" defer></script>
+</head>
+<body>
+  <h1>文件拷贝工具</h1>
+  <div class="button-container">
+    <button id="source-button">源端</button>
+    <button id="destination-button">目的端</button>
+  </div>
+  <input id="file-input" type="file" accept="*" style="display: none;">
+  <div id="file-name"></div>
+  <div id="qrcode-container"></div>
+  <div id="qr-reader" style="width:500px"></div>
+  <div id="qr-reader-results"></div>
+</body>
+</html>
