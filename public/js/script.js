@@ -24,22 +24,35 @@ function handleFileInputChange(event) {
 
 function handleFileRead(e) {
   const fileBuffer = e.target.result;
-  const base64String = btoa(String.fromCharCode.apply(null, new Uint8Array(fileBuffer)));
+  const chunks = [];
+  for (let i = 0; i < fileBuffer.byteLength; i += 200) {
+    const chunk = fileBuffer.slice(i, i + 200);
+    const base64String = btoa(String.fromCharCode.apply(null, new Uint8Array(chunk)));
+    chunks.push(base64String);
+  }
 
   // Generate QR code
   const qrcodeContainer = document.getElementById('qrcode-container');
-  qrcodeContainer.innerHTML = ''; // Clear previous QR code
 
   // Ensure QRCode is loaded
   if (typeof QRCode !== 'undefined') {
-    new QRCode(qrcodeContainer, {
-      text: base64String,
-      width: 200,
-      height: 200,
-      colorDark: '#000000',
-      colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.H
-    });
+    let count = 0;
+    const intervalId = setInterval(() => {
+      if (count < chunks.length) {
+        qrcodeContainer.innerHTML = ''; // Clear previous QR code
+        new QRCode(qrcodeContainer, {
+          text: chunks[count],
+          width: 500,
+          height: 500,
+          colorDark: '#000000',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.L
+        });
+        count++;
+      } else {
+        clearInterval(intervalId);
+      }
+    }, 2000);
   } else {
     console.error('QRCode library is not loaded.');
   }
@@ -50,13 +63,16 @@ fileInput.addEventListener('change', handleFileInputChange);
 function handleDestinationButtonClick() {
   var resultContainer = document.getElementById('qr-reader-results');
   var lastResult, countResults = 0;
+  var chunks = [];
 
   function onScanSuccess(decodedText) {
     if (decodedText !== lastResult) {
       ++countResults;
+      chunks.push(decodedText);
       lastResult = decodedText;
       // Handle on success condition with the decoded message.
       console.log(`Scan result ${decodedText}`);
+      console.log(chunks.join(""));      
     }
   }
 
